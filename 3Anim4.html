@@ -1,1 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Neon Rain with Animated Sun</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .rain-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 1s ease;
+    }
+
+    .raindrop {
+      position: absolute;
+      top: -50px;
+      border-radius: 50%;
+      animation-name: fall;
+      animation-timing-function: linear;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    /* Glowing Sun */
+    .sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: yellow;
+      box-shadow: 0 0 30px yellow, 0 0 60px yellow, 0 0 90px yellow;
+      z-index: 3;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1);
+      transition: opacity 1s ease;
+      animation: pulseGlow 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow: 0 0 30px yellow, 0 0 60px yellow, 0 0 90px yellow;
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        box-shadow: 0 0 40px yellow, 0 0 80px yellow, 0 0 120px yellow;
+      }
+    }
+
+    /* Rotating Sun Rays */
+    .sun-rays {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 200px;
+      height: 200px;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      opacity: 0;
+      transition: opacity 1s ease;
+      animation: rotateRays 10s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes rotateRays {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .ray {
+      position: absolute;
+      width: 10px;
+      height: 30px;
+      background: yellow;
+      box-shadow: 0 0 10px yellow;
+      border-radius: 2px;
+      left: 50%;
+      top: 50%;
+      transform-origin: center;
+    }
+
+    /* Position rays in a circle */
+    .ray:nth-child(1)  { transform: rotate(0deg) translateY(-100px); }
+    .ray:nth-child(2)  { transform: rotate(45deg) translateY(-100px); }
+    .ray:nth-child(3)  { transform: rotate(90deg) translateY(-100px); }
+    .ray:nth-child(4)  { transform: rotate(135deg) translateY(-100px); }
+    .ray:nth-child(5)  { transform: rotate(180deg) translateY(-100px); }
+    .ray:nth-child(6)  { transform: rotate(225deg) translateY(-100px); }
+    .ray:nth-child(7)  { transform: rotate(270deg) translateY(-100px); }
+    .ray:nth-child(8)  { transform: rotate(315deg) translateY(-100px); }
+  </style>
+</head>
+<body>
+  <div class="rain-container" id="rain"></div>
+
+  <div class="sun" id="sun"></div>
+  <div class="sun-rays" id="sunRays">
+    <div class="ray"></div>
+    <div class="ray"></div>
+    <div class="ray"></div>
+    <div class="ray"></div>
+    <div class="ray"></div>
+    <div class="ray"></div>
+    <div class="ray"></div>
+    <div class="ray"></div>
+  </div>
+
+  <script>
+    const rainContainer = document.getElementById('rain');
+    const sun = document.getElementById('sun');
+    const sunRays = document.getElementById('sunRays');
+
+    const dropCount = 250;
+    const waveInterval = 8000;
+    const sunDisplayDuration = 3000;
+
+    const colorWaves = [
+      ['#00ff00', '#32cd32', '#7fff00'],
+      ['#00ffff', '#0ff', '#40e0d0'],
+      ['#ff00ff', '#ff69b4', '#da70d6'],
+      ['#00bfff', '#1e90ff', '#87ceeb'],
+      ['#ffff00', '#f0e68c', '#ffd700'],
+      ['#ff4500', '#ff6347', '#ffa500'],
+    ];
+
+    let waveIndex = 0;
+
+    function createRainWave(colors) {
+      rainContainer.innerHTML = '';
+
+      for (let i = 0; i < dropCount; i++) {
+        const drop = document.createElement('div');
+        drop.classList.add('raindrop');
+
+        const size = Math.random() * 3 + 1;
+        drop.style.width = `${size}px`;
+        drop.style.height = `${size * 10}px`;
+        drop.style.left = `${Math.random() * 100}vw`;
+
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        drop.style.backgroundColor = color;
+        drop.style.boxShadow = `0 0 8px ${color}, 0 0 16px ${color}`;
+
+        const duration = (Math.random() * 2 + 1).toFixed(2);
+        const delay = (Math.random() * 1).toFixed(2);
+        drop.style.animationDuration = `${duration}s`;
+        drop.style.animationDelay = `${delay}s`;
+
+        rainContainer.appendChild(drop);
+      }
+    }
+
+    function showSun() {
+      rainContainer.style.opacity = 0;
+      sun.style.opacity = 1;
+      sunRays.style.opacity = 1;
+
+      setTimeout(() => {
+        sun.style.opacity = 0;
+        sunRays.style.opacity = 0;
+        rainContainer.style.opacity = 1;
+      }, sunDisplayDuration);
+    }
+
+    function cycle() {
+      showSun();
+
+      setTimeout(() => {
+        const colors = colorWaves[waveIndex % colorWaves.length];
+        createRainWave(colors);
+        waveIndex++;
+      }, sunDisplayDuration + 100);
+    }
+
+    // Start the first rain
+    createRainWave(colorWaves[0]);
+    waveIndex = 1;
+
+    // Repeat cycle
+    setInterval(cycle, waveInterval);
+  </script>
+</body>
+</html>
 
