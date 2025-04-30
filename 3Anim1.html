@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Neon Green Rain</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .rain-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+    .raindrop {
+      position: absolute;
+      top: -50px;
+      border-radius: 50%;
+      background-color: limegreen;
+      box-shadow: 0 0 10px limegreen, 0 0 20px limegreen;
+      animation-name: fall;
+      animation-timing-function: linear;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="rain-container" id="rain"></div>
+
+  <script>
+    const rainContainer = document.getElementById('rain');
+    const dropCount = 300;
+
+    function randomGreenShade() {
+      const greens = [
+        '#00ff00', '#32cd32', '#7fff00', '#adff2f', '#90ee90',
+        '#98fb98', '#00fa9a', '#66ff66', '#ccffcc', '#bfff00'
+      ];
+      return greens[Math.floor(Math.random() * greens.length)];
+    }
+
+    for (let i = 0; i < dropCount; i++) {
+      const drop = document.createElement('div');
+      drop.classList.add('raindrop');
+
+      const size = Math.random() * 3 + 1; // 1px to 4px
+      drop.style.width = `${size}px`;
+      drop.style.height = `${size * 10}px`;
+
+      drop.style.left = `${Math.random() * 100}vw`;
+      drop.style.backgroundColor = randomGreenShade();
+      drop.style.boxShadow = `0 0 8px ${drop.style.backgroundColor}, 0 0 15px ${drop.style.backgroundColor}`;
+
+      const duration = (Math.random() * 2 + 1).toFixed(2); // 1s to 3s
+      const delay = (Math.random() * 5).toFixed(2); // 0 to 5s
+
+      drop.style.animationDuration = `${duration}s`;
+      drop.style.animationDelay = `${delay}s`;
+
+      rainContainer.appendChild(drop);
+    }
+  </script>
+</body>
+</html>
 
