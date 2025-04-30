@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Color Cycling Neon Rain</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      overflow: hidden;
+    }
+
+    .rain-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+
+    .raindrop {
+      position: absolute;
+      top: -50px;
+      border-radius: 50%;
+      animation-name: fall;
+      animation-timing-function: linear;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="rain-container" id="rain"></div>
+
+  <script>
+    const rainContainer = document.getElementById('rain');
+    const dropCount = 300;
+    const waveInterval = 6000; // New wave every 6 seconds
+
+    const colorWaves = [
+      ['#00ff00', '#32cd32', '#7fff00'], // green tones
+      ['#00ffff', '#0ff', '#40e0d0'],     // cyan
+      ['#ff00ff', '#ff69b4', '#da70d6'], // magenta/pink
+      ['#00bfff', '#1e90ff', '#87ceeb'], // blue
+      ['#ffff00', '#f0e68c', '#ffd700'], // yellow
+      ['#ff4500', '#ff6347', '#ffa500'], // orange
+    ];
+
+    let waveIndex = 0;
+
+    function createRainWave(colors) {
+      // Clear previous rain
+      rainContainer.innerHTML = '';
+
+      for (let i = 0; i < dropCount; i++) {
+        const drop = document.createElement('div');
+        drop.classList.add('raindrop');
+
+        const size = Math.random() * 3 + 1;
+        drop.style.width = `${size}px`;
+        drop.style.height = `${size * 10}px`;
+
+        drop.style.left = `${Math.random() * 100}vw`;
+
+        // Pick a random shade from current wave colors
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        drop.style.backgroundColor = color;
+        drop.style.boxShadow = `0 0 8px ${color}, 0 0 16px ${color}`;
+
+        const duration = (Math.random() * 2 + 1).toFixed(2);
+        const delay = (Math.random() * 2).toFixed(2);
+
+        drop.style.animationDuration = `${duration}s`;
+        drop.style.animationDelay = `${delay}s`;
+
+        rainContainer.appendChild(drop);
+      }
+    }
+
+    function cycleRain() {
+      const colors = colorWaves[waveIndex % colorWaves.length];
+      createRainWave(colors);
+      waveIndex++;
+    }
+
+    // Start the rain loop
+    cycleRain();
+    setInterval(cycleRain, waveInterval);
+  </script>
+</body>
+</html>
 
