@@ -1,4 +1,5 @@
-##
+<p align="center"> AnimTrice
+
 AnimTrice expands on the programming found in AnimOne and AnimDuo.
 >Recommended Testing Sites (RTS) 
 Are sites that I test these codes on
